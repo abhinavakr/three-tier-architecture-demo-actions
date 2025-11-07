@@ -18,4 +18,4 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t nodejs-service:latest services/nodejs
+          docker build -t n cart:latest services/nodejs
