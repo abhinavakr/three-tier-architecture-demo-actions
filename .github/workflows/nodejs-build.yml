@@ -18,4 +18,5 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t cart:latest cart
+          docker build -t cart:latest cart/
+
