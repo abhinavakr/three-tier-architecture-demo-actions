@@ -141,7 +141,7 @@ app.get('/add/:id/:sku/:qty', (req, res) => {
     var qty = parseInt(req.params.qty);
     if(isNaN(qty)) {
         req.log.warn('quantity not a number');
-        res.status(400).send('quantity must be a number');
+        res.status(400).send('quantity must be a number!');
         return;
     } else if(qty < 1) {
         req.log.warn('quantity less than one');
