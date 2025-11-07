@@ -3,7 +3,7 @@ name: Build NodeJS Service
 on:
   push:
     paths:
-      - 'services/nodejs/**'
+      - 'cart/**'
     branches:
       - main
   workflow_dispatch:
