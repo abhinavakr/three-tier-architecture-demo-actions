@@ -21,7 +21,7 @@ RUN mvn package
 #
 # Run
 #
-FROM openjdk:8
+FROM openjdk:8-jdk-buster
 
 EXPOSE 8080
 
