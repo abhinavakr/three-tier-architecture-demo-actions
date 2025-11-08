@@ -21,7 +21,7 @@ RUN mvn package
 #
 # Run
 #
-FROM eclipse-temurin:8-jdk
+FROM debian:bullseye AS build
 
 EXPOSE 8080
 
