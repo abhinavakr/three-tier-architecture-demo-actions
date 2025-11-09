@@ -1,4 +1,4 @@
-name: Build NodeJS Service
+name: Build and Push NodeJS Service
 
 on:
   push:
@@ -8,35 +8,35 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  IMAGE_NAME: cart
+  GIT_TAG: v1.1.0
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      git_tag: v1.1.0
-      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-      GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
-      IMAGE_NAME: cart
-
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Cloud SDK
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
-          service_account_key: ${{ env.GCP_SA_KEY }}
-          project_id: ${{ env.GCP_PROJECT_ID }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Configure Docker for GCR
-        run: gcloud auth configure-docker gcr.io --quiet
+        run: gcloud auth configure-docker gcr.io
 
       - name: Build Docker Image
         run: |
-          docker build -t gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.git_tag }} cart/
-          docker build -t gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest cart/
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }} cart/
 
-      - name: Push Image to GCR
+      - name: Push Docker Image
         run: |
-          docker push gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.git_tag }}
-          docker push gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }}
