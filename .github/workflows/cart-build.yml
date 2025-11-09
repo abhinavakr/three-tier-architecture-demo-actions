@@ -33,8 +33,5 @@ jobs:
       - name: Configure Docker
         run: gcloud auth configure-docker gcr.io
 
-      - name: Build Docker Image
+      - name: Build and Push Docker Image
         run: docker buildx build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/cart:v1.1.0 ./cart --push
-
-      - name: Push Docker Image
-        run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/cart:v1.1.0
