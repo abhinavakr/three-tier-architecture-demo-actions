@@ -26,22 +26,22 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      # ✅ Setup gcloud with your project ID secret
+      # ✅ Setup gcloud using project ID
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      # ✅ Configure Docker for GCR
+      # ✅ Configure Docker to push to GCR
       - name: Configure Docker
         run: gcloud auth configure-docker gcr.io
 
-      # ✅ Build Docker image
+      # ✅ Build image using NORMAL docker build (NOT buildx)
       - name: Build Docker Image
         run: |
           docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }} ./cart
 
-      # ✅ Push Docker image
+      # ✅ Push the image
       - name: Push Docker Image
         run: |
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }}
