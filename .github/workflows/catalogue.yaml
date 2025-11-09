@@ -26,8 +26,6 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Configure Docker to use gcloud as credential helper
-        run: gcloud auth configure-docker gcr.io
-
-      - name: Build and push Docker image
+      - name: Build and Push Docker image
         run: docker buildx build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/catalogue:latest ./catalogue --push
+
