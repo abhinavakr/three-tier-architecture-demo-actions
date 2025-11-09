@@ -20,21 +20,28 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # ✅ Authenticate to GCP
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
+      # ✅ Setup gcloud with your project ID secret
       - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Configure Docker for GCR
+      # ✅ Configure Docker for GCR
+      - name: Configure Docker
         run: gcloud auth configure-docker gcr.io
 
+      # ✅ Build Docker image
       - name: Build Docker Image
-        run: docker build -t gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }} .
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }} ./cart
 
+      # ✅ Push Docker image
       - name: Push Docker Image
-        run: docker push gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }}
+        run: |
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }}
