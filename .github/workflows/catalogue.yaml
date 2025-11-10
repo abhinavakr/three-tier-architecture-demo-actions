@@ -1,4 +1,4 @@
-name: Build and Push NodeJS Service
+name: Build and Push NodeJS Service catalogue
 
 on:
   push:
