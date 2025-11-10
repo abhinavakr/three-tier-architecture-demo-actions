@@ -1,31 +1,51 @@
-name: Build NodeJS Service
+name: Build and Push NodeJS Service
 
 on:
   push:
     paths:
-      - 'catalogue/**'
+      - 'cart/**'
     branches:
       - main
   workflow_dispatch:
+
+env:
+  IMAGE_NAME: cart
+  GIT_TAG: v1.1.0
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Authenticate to GCP
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Set up gcloud
+      # Setup gcloud
+      - name: Setup gcloud
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
 
-      - name: Build and Push Docker image
-        run: docker buildx build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/catalogue:latest ./catalogue --push
+      # Configure Docker to authenticate with Artifact Registry
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
+      # Build Docker Image
+      - name: Build Docker Image
+        run: |
+          docker build \
+            -t us-central1-docker.pkg.dev/solar-idea-466712-c7/demo/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }} \
+            ./cart
+
+      # Push Docker Image
+      - name: Push Docker Image
+        run: |
+          docker push \
+            us-central1-docker.pkg.dev/solar-idea-466712-c7/demo/${{ env.IMAGE_NAME }}:${{ env.GIT_TAG }}
