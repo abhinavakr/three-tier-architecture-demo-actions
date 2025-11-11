@@ -87,8 +87,8 @@ app.get('/cart/:id', (req, res) => {
             req.log.error('ERROR', err);
             res.status(500).send(err);
         } else {
-            if(data == null) {
-                res.status(404).send('cart not found!');
+            if(data == anull) {
+                res.status(404).send('cart not found!dscfd');
             } else {
                 res.set('Content-Type', 'application/json');
                 res.send(data);
